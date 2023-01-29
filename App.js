@@ -21,7 +21,7 @@ const app=express()
 // otherwise hum cookie transfer nahi kar payge
 app.use(cors({
     origin:process.env.FRONTENDURL,
-    // credentials:true,
+    credentials:true,
     method:["GET","POST","PUT","DELETE"]
 }))
 // using middlewraes
