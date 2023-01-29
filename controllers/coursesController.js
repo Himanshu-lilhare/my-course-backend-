@@ -121,7 +121,7 @@ export const deletecourse = catchAsyncError(async (req, res, next) => {
 export const deletelecture=catchAsyncError(async(req,res,next)=>{
   const {courseid,lectureid}=req.query
   console.log(courseid)
-  const course=await Course.findById(courseid)
+  const course= await Course.findById(courseid)
   console.log(course)
   if(!course) return next(new ErrorHandling("course nahi mila",400))
 
