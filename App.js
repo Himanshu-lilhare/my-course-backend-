@@ -20,7 +20,7 @@ const app=express()
 // to cors me kuch mandatory chize deni hai 
 // otherwise hum cookie transfer nahi kar payge
 app.use(cors({
-    origin:process.env.FRONTENDURL,
+    Origin:process.env.FRONTENDURL,
     credentials:true,
     method:["GET","POST","PUT","DELETE"]
 }))
