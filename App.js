@@ -23,14 +23,15 @@ const app=express()
 // using middlewraes
 
 app.use(express.json())
-app.use(express.urlencoded({
-    extended:true
-}))
 app.use(cors({
     origin:'https://my-startup-frontend.vercel.app',
     credentials:true,
     method:["GET","POST","PUT","DELETE"]
 }))
+app.use(express.urlencoded({
+    extended:true
+}))
+
 
 
 // app.use(cors())
