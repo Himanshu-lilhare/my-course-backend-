@@ -7,18 +7,18 @@ import cloudinary from "cloudinary";
 
 // get course
 export const getallcourses = catchAsyncError(async (req, res, next) => {
-  let keyword=req.query.keyword || ''
-  let category=req.query.category || ''
+  let keyword = req.query.keyword || "";
+  let category = req.query.category || "";
 
   let data = await Course.find({
-    title:{
-      $regex:keyword,
-      $options:"i"
+    title: {
+      $regex: keyword,
+      $options: "i",
     },
-    category:{
-      $regex:category,
-      $options:"i"
-    }
+    category: {
+      $regex: category,
+      $options: "i",
+    },
   }).select("-lectures");
 
   res.status(200).json(data);
@@ -84,9 +84,7 @@ export const addlectures = catchAsyncError(async (req, res, next) => {
       public_id: mycloud.public_id,
       url: mycloud.secure_url,
     },
-
-    // file
-  });
+ });
   course.noOfVideos = course.lectures.length;
   await course.save();
 
@@ -118,32 +116,31 @@ export const deletecourse = catchAsyncError(async (req, res, next) => {
   });
 });
 
-export const deletelecture=catchAsyncError(async(req,res,next)=>{
-  const {courseid,lectureid}=req.query
-  console.log(courseid)
-  const course= await Course.findById(courseid)
-  console.log(course)
-  if(!course) return next(new ErrorHandling("course nahi mila",400))
+export const deletelecture = catchAsyncError(async (req, res, next) => {
+  const { courseid, lectureid } = req.query;
 
-  const lecture= course.lectures.find((item)=>{
-    if(item._id.toString()===lectureid){
-      return item
+  const course = await Course.findById(courseid);
+
+  if (!course) return next(new ErrorHandling("course nahi mila", 400));
+
+  const lecture = course.lectures.find((item) => {
+    if (item._id.toString() === lectureid) {
+      return item;
     }
-  })
-await cloudinary.v2.uploader.destroy(lecture.video.public_id,{
-  resource_type:"video"
-})
+  });
+  await cloudinary.v2.uploader.destroy(lecture.video.public_id, {
+    resource_type: "video",
+  });
 
-course.lectures=course.lectures.filter((item)=>{
-  if(item._id.toString()!==lectureid){
-    return item
-  }
-})
-course.noOfVideos=course.lectures.length
+  course.lectures = course.lectures.filter((item) => {
+    if (item._id.toString() !== lectureid) {
+      return item;
+    }
+  });
+  course.noOfVideos = course.lectures.length;
 
-await course.save()
-res.status(200).json({
-  success:"delete ho gaya lecture"
-})
-
-})
+  await course.save();
+  res.status(200).json({
+    success: "delete ho gaya lecture",
+  });
+});

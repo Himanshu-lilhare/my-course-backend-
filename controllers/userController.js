@@ -7,11 +7,10 @@ import crypto from "crypto";
 import { Course } from "../models/Course.js";
 import getdatauri from "../utils/datauri.js";
 import cloudinary from "cloudinary";
- import {statsModel} from "../models/dashboardStats.js"
+import { statsModel } from "../models/dashboardStats.js";
 
 export const getallusers = catchAsyncError(async (req, res, next) => {
   const users = await usermodel.find({});
-
   res.status(200).json({
     success: "all user get successfully",
     users,
@@ -63,7 +62,7 @@ export const login = catchAsyncError(async (req, res, next) => {
   } else {
     // console.log(user);
     let isright = await user.comparePassword(password);
-    console.log(isright);
+    
     if (isright) {
       sendToken(res, user, "logged in successfully", 201);
     } else {
@@ -77,12 +76,11 @@ export const login = catchAsyncError(async (req, res, next) => {
 export const logout = catchAsyncError(async (req, res, next) => {
   res
     .status(200)
-    .cookie("token",null, {
-      expires:new Date(Date.now()),
-      secure:true,
-      httpOnly:true,
-      sameSite:"none",
-    
+    .cookie("token", null, {
+      expires: new Date(Date.now()),
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
     })
     .json({
       Sucess: "loged out",
@@ -93,7 +91,7 @@ export const logout = catchAsyncError(async (req, res, next) => {
 
 export const getacces = catchAsyncError(async (req, res, next) => {
   let user = await usermodel.findById(req.user._id);
-if(!user) return next(new ErrorHandling("your account doesnot exist ",400))
+  if (!user) return next(new ErrorHandling("your account doesnot exist ", 400));
 
   res.status(200).json({ user });
 });
@@ -110,12 +108,10 @@ export const changepassword = catchAsyncError(async (req, res, next) => {
   if (isOldpasswordRight) {
     user.password = newpassword;
     await user.save();
-    res.status(200).json(
-      {
-        succes:"Password changed",
-        user
-      }
-    )
+    res.status(200).json({
+      succes: "Password changed",
+      user,
+    });
   } else {
     next(new ErrorHandling("incorret old password", 400));
   }
@@ -158,7 +154,6 @@ export const updateavatar = catchAsyncError(async (req, res, next) => {
     success: true,
     message: "avatar changed",
   });
-  // console.log(user.name)
 });
 // ye banayege badme
 
@@ -246,7 +241,7 @@ export const removefromplaylist = catchAsyncError(async (req, res, next) => {
   const user = await usermodel.findById(req.user._id);
 
   const course = await Course.findById(req.query.id);
-     console.log(course)
+
   if (!course) return next(new ErrorHandling("course is not available", 404));
 
   // let newplaylist = user.playlist.filter((item) => {
@@ -266,71 +261,70 @@ export const removefromplaylist = catchAsyncError(async (req, res, next) => {
   });
 });
 
-export const makeAdminOrUser=catchAsyncError(async(req,res,next)=>{
-  const user=await usermodel.findById(req.params.id)
-  console.log("1")
-  if(!user) return next(new ErrorHandling("user doesnt exist",400))
-  console.log("2")
-  if(user.role=="user"){
-    user.role="admin"
-  }else{
-    user.role="user"
-  }
-  await user.save()
-  res.status(200).json({
-    success:"Role successfully changed",
-    role:user.role
-  })
+export const makeAdminOrUser = catchAsyncError(async (req, res, next) => {
+  const user = await usermodel.findById(req.params.id);
 
-})
+  if (!user) return next(new ErrorHandling("user doesnt exist", 400));
+  console.log("2");
+  if (user.role == "user") {
+    user.role = "admin";
+  } else {
+    user.role = "user";
+  }
+  await user.save();
+  res.status(200).json({
+    success: "Role successfully changed",
+    role: user.role,
+  });
+});
 
 // api for delete user
 
-export const deleteuser=catchAsyncError(async(req,res,next)=>{
-  const user=await usermodel.findById(req.params.id)
-  if(!user) return next(new ErrorHandling("User nof Found",404))
- 
-  await cloudinary.v2.uploader.destroy(user.avatar.public_id)
-  await user.remove()
+export const deleteuser = catchAsyncError(async (req, res, next) => {
+  const user = await usermodel.findById(req.params.id);
+  if (!user) return next(new ErrorHandling("User nof Found", 404));
+
+  await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+  await user.remove();
   res.status(200).json({
-    success:"User deleted"
-})
-})
+    success: "User deleted",
+  });
+});
 
 // api for delete profile by user
 
-export const deleteprofile=catchAsyncError(async(req,res,next)=>{
-  const user=await usermodel.findById(req.user._id)
-   
-  await cloudinary.v2.uploader.destroy(user.avatar.public_id)
-  await user.remove()
-  res.cookie("token",null,{
-    expires:new Date(Date.now())
-  })
+export const deleteprofile = catchAsyncError(async (req, res, next) => {
+  const user = await usermodel.findById(req.user._id);
+
+  await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+  await user.remove();
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+  });
   res.json({
-    Sucees:"Profile deleted"
-  })
+    Sucees: "Profile deleted",
+  });
+});
 
-})
+usermodel.watch().on("change", async () => {
 
-usermodel.watch().on("change",async()=>{
-  console.log("working")
-const stats=await statsModel.find({}).sort({createdate:"desc"}).limit(1)
-console.log(stats)
+  const stats = await statsModel.find({}).sort({ createdate: "desc" }).limit(1);
+ 
 
- stats[0].users=await usermodel.countDocuments()
+  stats[0].users = await usermodel.countDocuments();
 
-const subscriptions=await usermodel.find({"subscription.status":"active"})
-stats[0].subscriptions=subscriptions.length
-stats[0].createdate=new Date(Date.now())
+  const subscriptions = await usermodel.find({
+    "subscription.status": "active",
+  });
+  stats[0].subscriptions = subscriptions.length;
+  stats[0].createdate = new Date(Date.now());
 
-let course=await Course.find({})
-let totalviews=0
+  let course = await Course.find({});
+  let totalviews = 0;
 
-for(let i=0;i<course.length;i++){
-     totalviews=course[i].views+totalviews
-}
-stats[0].views=totalviews
-await stats[0].save()
-
-})
+  for (let i = 0; i < course.length; i++) {
+    totalviews = course[i].views + totalviews;
+  }
+  stats[0].views = totalviews;
+  await stats[0].save();
+});

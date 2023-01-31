@@ -19,16 +19,17 @@ dotenv.config({
 const app=express()
 // to cors me kuch mandatory chize deni hai 
 // otherwise hum cookie transfer nahi kar payge
-app.use(cors({
-    Origin:process.env.FRONTENDURL,
-    credentials:true,
-    method:["GET","POST","PUT","DELETE"]
-}))
+
 // using middlewraes
 
 app.use(express.json())
 app.use(express.urlencoded({
     extended:true
+}))
+app.use(cors({
+    origin:'http://my-startup-frontend.vercel.app',
+    credentials:true,
+    method:["GET","POST","PUT","DELETE"]
 }))
 
 

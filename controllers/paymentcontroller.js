@@ -66,11 +66,10 @@ export const canclesubs=catchAsyncError(async(req,res,next)=>{
   const subscriptionid=user.subscription.id
   // let refund=false
   const payment=await Payment.findOne({razorpay_subscription_id:subscriptionid})
-  console.log(payment.createdate)
- console.log(subscriptionid)
+ 
 
    await instance.subscriptions.cancel(subscriptionid)
-   console.log(user.name)
+  
   const gap=Date.now() - payment.createdate
 
   const validUpto=process.env.VALID_DAY * 24 * 60 * 60 * 1000
