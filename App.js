@@ -21,13 +21,13 @@ const app=express()
 // otherwise hum cookie transfer nahi kar payge
 
 // using middlewraes
-
-app.use(express.json())
 app.use(cors({
     origin:'https://my-startup-frontend.vercel.app',
     credentials:true,
     method:["GET","POST","PUT","DELETE"]
 }))
+app.use(express.json())
+
 app.use(express.urlencoded({
     extended:true
 }))
