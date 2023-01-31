@@ -27,7 +27,7 @@ app.use(express.urlencoded({
     extended:true
 }))
 app.use(cors({
-    origin:'http://my-startup-frontend.vercel.app',
+    origin:'https://my-startup-frontend.vercel.app',
     credentials:true,
     method:["GET","POST","PUT","DELETE"]
 }))
