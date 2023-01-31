@@ -35,7 +35,7 @@ app.use(cookieParser());
 // otherwise hum cookie transfer nahi kar payge
 app.use(
   cors({
-    origin: "https://my-startup-frontend.vercel.app/",
+    origin: "https://my-startup-frontend.vercel.app",
     credentials: true,
     method: ["GET", "POST", "PUT", "DELETE"],
   })
