@@ -17,15 +17,10 @@ dotenv.config({
 })
 
 const app=express()
-// to cors me kuch mandatory chize deni hai 
-// otherwise hum cookie transfer nahi kar payge
+
 
 // using middlewraes
-app.use(cors({
-    origin:'https://my-startup-frontend.vercel.app',
-    credentials:true,
-    method:["GET","POST","PUT","DELETE"]
-}))
+
 app.use(express.json())
 
 app.use(express.urlencoded({
@@ -37,7 +32,13 @@ app.use(express.urlencoded({
 // app.use(cors())
 
 app.use(cookieParser())
-
+// to cors me kuch mandatory chize deni hai 
+// otherwise hum cookie transfer nahi kar payge
+app.use(cors({
+    origin:'https://my-startup-frontend.vercel.app',
+    credentials:true,
+    method:["GET","POST","PUT","DELETE"]
+}))
 
 
 // importing routes
